@@ -55,7 +55,7 @@ export function useMockWebSocket() {
           })
         );
       }
-    }, 1000); // 2 seconds
+    }, 2000); // 2 seconds
 
     // --- MOCK NEW TOKEN ---
     // Every 10 seconds, add a new token
