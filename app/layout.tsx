@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Axiom Pulse Clone", // <-- (Updated title)
+  title: "Axiom Pulse Clone", 
   description: "Token discovery table built with Next.js",
 };
 
@@ -28,7 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* 2. WRAP CHILDREN WITH PROVIDERS */}
+       
         <AppProviders>{children}</AppProviders>
       </body>
     </html>
