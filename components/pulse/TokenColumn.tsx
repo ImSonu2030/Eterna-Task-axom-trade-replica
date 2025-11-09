@@ -1,10 +1,10 @@
 // components/pulse/TokenColumn.tsx
-import { Token } from "@/lib/types"; // We'll use this soon
+import { Token } from "@/lib/types"; 
 import React from "react";
 
 interface TokenColumnProps {
   title: string;
-  tokens: Token[]; // We'll pass mock data here
+  tokens: Token[];
 }
 
 // We will import TokenRow soon

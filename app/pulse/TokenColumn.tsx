@@ -1,7 +1,6 @@
-// components/pulse/TokenColumn.tsx
 import { Token } from "@/lib/types";
 import React from "react";
-import { TokenRow } from "./TokenRow"; // <-- IMPORT IT
+import { TokenRow } from "./TokenRow"; 
 
 interface TokenColumnProps {
   title: string;
@@ -15,7 +14,6 @@ export function TokenColumn({ title, tokens }: TokenColumnProps) {
         <h2 className="text-white font-semibold">{title}</h2>
       </div>
 
-      {/* UPDATE THIS PART */}
       <div className="flex flex-col divide-y divide-gray-700/50">
         {tokens.length > 0 ? (
           tokens.map((token) => (

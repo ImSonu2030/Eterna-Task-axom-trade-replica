@@ -1,4 +1,4 @@
-import { TokenColumn } from "@/components/pulse/TokenColumn";
+import { TokenColumn } from "./TokenColumn";
 import { Token } from "@/lib/types";
 import { MOCK_NEW_PAIRS } from "@/lib/dummyData";
 
