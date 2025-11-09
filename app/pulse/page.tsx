@@ -6,7 +6,6 @@ import { useMockWebSocket } from "@/lib/store/useMockWebSocket";
 import { PulseNavigation } from "./PulseNavigation";
 
 export default function PulsePage() {
-  // ... (hooks and error handling are unchanged)
   const { isLoading, error } = useTokenData();
   useMockWebSocket();
 
@@ -27,7 +26,6 @@ export default function PulsePage() {
       <PulseNavigation />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Pass the showFilters prop */}
         <TokenColumn title="New Pairs" showFilters={true} />
         <TokenColumn title="Final Stretch" />
         <TokenColumn title="Migrated" />

@@ -20,8 +20,8 @@ export function PulseNavigation() {
           className={cn(
             "py-2 px-4 rounded-lg text-sm font-semibold",
             activeTab === tab
-              ? "bg-[#1C1C1C] text-white" // Active tab style
-              : "text-gray-400 hover:text-white" // Inactive tab style
+              ? "bg-[#1C1C1C] text-white cursor-pointer" 
+              : "text-gray-400 hover:text-white cursor-pointer" 
           )}
         >
           {tab}

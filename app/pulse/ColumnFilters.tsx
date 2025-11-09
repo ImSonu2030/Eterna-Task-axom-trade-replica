@@ -17,10 +17,10 @@ export function ColumnFilters() {
           variant="ghost"
           onClick={() => setActiveFilter(filter)}
           className={cn(
-            "py-1 px-3 text-xs h-auto rounded", // Base styles
+            "py-1 px-3 text-xs h-auto rounded", 
             activeFilter === filter
-              ? "bg-[#5865F2] text-white hover:bg-[#5865F2]/90" // Active style
-              : "text-gray-400 hover:bg-[#2a2a2a] hover:text-white" // Inactive style
+              ? "bg-[#5865F2] text-white hover:bg-[#5865F2]/90 cursor-pointer" 
+              : "text-gray-400 hover:bg-[#2a2a2a] hover:text-white cursor-pointer"
           )}
         >
           {filter}

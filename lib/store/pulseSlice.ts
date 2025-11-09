@@ -7,7 +7,7 @@ interface PulseState {
   migrated: Token[];
   isLoading: boolean;
   error: string | null;
-  justUpdatedTokenId: string | null; // <-- 1. ADD THIS
+  justUpdatedTokenId: string | null; 
 }
 
 const initialState: PulseState = {
@@ -16,7 +16,7 @@ const initialState: PulseState = {
   migrated: [],
   isLoading: true,
   error: null,
-  justUpdatedTokenId: null, // <-- 2. ADD THIS
+  justUpdatedTokenId: null, 
 };
 
 const pulseSlice = createSlice({
@@ -39,40 +39,35 @@ const pulseSlice = createSlice({
       state.error = action.payload;
     },
 
-    // 3. ADD THIS NEW REDUCER
     addToken(state, action: PayloadAction<Token>) {
-      // Adds a new token to the start of the 'newPairs' array
+     
       state.newPairs.unshift(action.payload);
-      // Optional: limit array size
+     
       if (state.newPairs.length > 20) {
         state.newPairs.pop();
       }
-      state.justUpdatedTokenId = action.payload.id; // Flash for new token
+      state.justUpdatedTokenId = action.payload.id; 
     },
 
-    // 4. ADD THIS NEW REDUCER
     updateToken(state, action: PayloadAction<{ id: string; newMarketCap: number }>) {
       const { id, newMarketCap } = action.payload;
       const token = state.newPairs.find((t) => t.id === id);
       if (token) {
         token.marketCap = newMarketCap;
-        state.justUpdatedTokenId = id; // Set this ID to trigger flash
+        state.justUpdatedTokenId = id; 
       }
     },
-    
-    // 5. ADD THIS NEW REDUCER
     clearJustUpdated(state) {
       state.justUpdatedTokenId = null;
     }
   },
 });
-
 export const { 
   setTokens, 
   setLoading, 
   setError, 
   addToken, 
   updateToken,
-  clearJustUpdated // <-- Export the new actions
+  clearJustUpdated 
 } = pulseSlice.actions;
 export default pulseSlice.reducer;

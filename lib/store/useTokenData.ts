@@ -1,4 +1,3 @@
-// lib/store/useTokenData.ts
 "use client";
 
 import { useEffect } from "react";
@@ -12,11 +11,9 @@ import {
 import { Token } from "@/lib/types";
 import { setTokens, setLoading, setError } from "./pulseSlice";
 
-// --- THIS FUNCTION IS THE MAIN FIX ---
 const mockFetch = (data: Token[], delay: number): Promise<Token[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // No processing needed! Data is already serializable.
       resolve(data);
     }, delay);
   });

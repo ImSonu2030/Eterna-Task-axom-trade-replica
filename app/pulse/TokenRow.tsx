@@ -1,4 +1,3 @@
-// app/pulse/TokenRow.tsx
 import { Token } from "@/lib/types";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -15,11 +14,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TokenChartPopover } from "./TokenChartPopover";
-import { RootState } from "@/lib/store/store"; // <-- 1. IMPORT
-import { useDispatch, useSelector } from "react-redux"; // <-- 2. IMPORT
-import { useEffect, useState } from "react"; // <-- 3. IMPORT
-import { clearJustUpdated } from "@/lib/store/pulseSlice"; // <-- 4. IMPORT
-import { cn } from "@/lib/utils"; // <-- 5. IMPORT cn (for classnames)
+import { RootState } from "@/lib/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react"; 
+import { clearJustUpdated } from "@/lib/store/pulseSlice"; 
+import { cn } from "@/lib/utils"; 
 
 interface TokenRowProps {
   token: Token;
@@ -27,24 +26,19 @@ interface TokenRowProps {
 
 export function TokenRow({ token }: TokenRowProps) {
   const dispatch = useDispatch();
-  // 6. Get the ID of the token that was just updated
   const justUpdatedTokenId = useSelector(
     (state: RootState) => state.pulse.justUpdatedTokenId
   );
   
-  // 7. Local state to control the flash
   const [isFlashing, setIsFlashing] = useState(false);
 
-  // 8. Effect to trigger the flash
   useEffect(() => {
     if (justUpdatedTokenId === token.id) {
       setIsFlashing(true);
-      // After the flash, dispatch action to clear the ID
-      // and remove the flash class
       const timer = setTimeout(() => {
         setIsFlashing(false);
         dispatch(clearJustUpdated());
-      }, 500); // Flash duration
+      }, 500);
 
       return () => clearTimeout(timer);
     }
@@ -53,11 +47,11 @@ export function TokenRow({ token }: TokenRowProps) {
   const formatMarketCap = (num: number) => {
     if (num > 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`;
     if (num > 1_000) return `$${(num / 1_000).toFixed(1)}K`;
-    return `$${num.toFixed(0)}`; // Format to 0 decimals for updates
+    return `$${num.toFixed(0)}`; 
   };
 
-  const formatTimeAgo = (timestamp: number) => { // <-- 1. Change 'date: Date' to 'timestamp: number'
-    const seconds = Math.floor((Date.now() - timestamp) / 1000); // <-- 2. Use 'Date.now()' and 'timestamp'
+  const formatTimeAgo = (timestamp: number) => { 
+    const seconds = Math.floor((Date.now() - timestamp) / 1000); 
     if (seconds < 60) return `${seconds}s`;
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m`;
@@ -68,14 +62,12 @@ export function TokenRow({ token }: TokenRowProps) {
   return (
     <TooltipProvider delayDuration={100}>
       <Popover>
-        {/* 9. Apply dynamic classes for the flash effect */}
         <div
           className={cn(
             "p-4 bg-[#131313] hover:bg-[#202020] transition-colors duration-500",
-            isFlashing && "bg-blue-500/20" // The "flash" class
+            isFlashing && "bg-blue-500/20" 
           )}
         >
-          {/* ... (rest of the component is identical) ... */}
           <div className="flex justify-between items-start mb-2">
             <div className="flex gap-3">
               <PopoverTrigger asChild>
@@ -135,7 +127,6 @@ export function TokenRow({ token }: TokenRowProps) {
               </div>
             </div>
             <div className="text-right">
-              {/* 10. Apply dynamic classes for MC flash */}
               <div className={cn(
                 "text-white font-bold transition-colors duration-500",
                 isFlashing && "text-blue-300"

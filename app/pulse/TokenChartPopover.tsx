@@ -11,7 +11,6 @@ interface TokenChartPopoverProps {
 export function TokenChartPopover({ token }: TokenChartPopoverProps) {
   return (
     <div className="flex flex-col gap-4 bg-[#1C1C1C] text-white p-4 rounded-lg w-80">
-      {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <img
