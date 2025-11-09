@@ -11,7 +11,7 @@ export default function PulsePage() {
   if (error) {
     return (
       <main className="min-h-screen bg-black text-white p-4">
-        <div className="text-red-500">Error loading data: {error.message}</div>
+        <div className="text-red-500">Error loading data: {error}</div>
       </main>
     );
   }

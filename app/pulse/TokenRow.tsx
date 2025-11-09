@@ -56,8 +56,8 @@ export function TokenRow({ token }: TokenRowProps) {
     return `$${num.toFixed(0)}`; // Format to 0 decimals for updates
   };
 
-  const formatTimeAgo = (date: Date) => {
-    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+  const formatTimeAgo = (timestamp: number) => { // <-- 1. Change 'date: Date' to 'timestamp: number'
+    const seconds = Math.floor((Date.now() - timestamp) / 1000); // <-- 2. Use 'Date.now()' and 'timestamp'
     if (seconds < 60) return `${seconds}s`;
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m`;

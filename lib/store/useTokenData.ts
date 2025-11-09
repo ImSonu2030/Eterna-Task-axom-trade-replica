@@ -2,55 +2,74 @@
 "use client";
 
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import { MOCK_NEW_PAIRS } from "@/lib/dummyData"; // Our mock data
+import {
+  MOCK_NEW_PAIRS,
+  MOCK_FINAL_STRETCH,
+  MOCK_MIGRATED,
+} from "@/lib/dummyData";
 import { Token } from "@/lib/types";
 import { setTokens, setLoading, setError } from "./pulseSlice";
 
-// 1. Create a mock API fetch function
-// This simulates fetching data from an API
-const fetchNewPairs = (): Promise<Token[]> => {
+// --- THIS FUNCTION IS THE MAIN FIX ---
+const mockFetch = (data: Token[], delay: number): Promise<Token[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // We need to convert creationTime to a Date object
-      const processedData = MOCK_NEW_PAIRS.map(token => ({
-        ...token,
-        creationTime: new Date(token.creationTime)
-      }));
-      resolve(processedData);
-    }, 1000); // Simulate 1 second delay
+      // No processing needed! Data is already serializable.
+      resolve(data);
+    }, delay);
   });
 };
 
-// 2. Create the custom hook
+const fetchNewPairs = () => mockFetch(MOCK_NEW_PAIRS, 1000);
+const fetchFinalStretch = () => mockFetch(MOCK_FINAL_STRETCH, 1500);
+const fetchMigrated = () => mockFetch(MOCK_MIGRATED, 500);
+
 export function useTokenData() {
   const dispatch = useDispatch();
 
-  // 3. Use React Query to fetch the data
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["newPairs"], // Unique key for this query
-    queryFn: fetchNewPairs, // The function to call
+  const results = useQueries({
+    queries: [
+      { queryKey: ["newPairs"], queryFn: fetchNewPairs },
+      { queryKey: ["finalStretch"], queryFn: fetchFinalStretch },
+      { queryKey: ["migrated"], queryFn: fetchMigrated },
+    ],
   });
 
-  // 4. Use useEffect to update Redux when data changes
+  const isLoading = results.some((query) => query.isLoading);
+  const error = results.find((query) => query.error)?.error;
+
   useEffect(() => {
     dispatch(setLoading(isLoading));
 
-    if (data) {
+    if (results[0].data) {
       dispatch(
-        setTokens({
-          column: "newPairs",
-          tokens: data,
-        })
+        setTokens({ column: "newPairs", tokens: results[0].data })
       );
-      // In a real app, you would also dispatch for 'finalStretch' and 'migrated'
     }
-
+    if (results[1].data) {
+      dispatch(
+        setTokens({ column: "finalStretch", tokens: results[1].data })
+      );
+    }
+    if (results[2].data) {
+      dispatch(
+        setTokens({ column: "migrated", tokens: results[2].data })
+      );
+    }
+    
     if (error) {
       dispatch(setError(error.message));
     }
-  }, [data, isLoading, error, dispatch]);
+  }, [
+    isLoading,
+    error,
+    dispatch,
+    results[0].data,
+    results[1].data,
+    results[2].data,
+  ]);
 
-  return { isLoading, error };
+  return { isLoading, error: error?.message || null };
 }

@@ -8,7 +8,7 @@ export interface Token {
   volume24h: number;
   priceChange: number;
   transactions: number;
-  creationTime: Date;
+  creationTime: number;
   buyAmount: number;
   stats: {
     buys: number;

@@ -7,6 +7,8 @@ import { addToken, updateToken } from "./pulseSlice";
 import { RootState } from "./store";
 import { Token } from "@/lib/types";
 
+// ... (imports are the same)
+
 // Helper function to create a new random token
 const createMockToken = (): Token => {
   const id = `token_${Math.floor(Math.random() * 10000)}`;
@@ -14,13 +16,13 @@ const createMockToken = (): Token => {
     id: id,
     name: "NEW MOCK",
     symbol: "MOK",
-    imageUrl: "/placeholder-runner.jpg", // Use a placeholder you have
+    imageUrl: "/placeholder-runner.jpg",
     pairAddress: `${id.slice(0, 4)}...pump`,
     marketCap: Math.floor(Math.random() * 5000) + 1000,
     volume24h: Math.floor(Math.random() * 1000),
     priceChange: (Math.random() - 0.5) * 0.1,
     transactions: Math.floor(Math.random() * 50),
-    creationTime: new Date(),
+    creationTime: Date.now(), // <-- FIX
     buyAmount: 0,
     stats: { buys: 1, sells: 0, holders: 1, liquidity: "0/1" },
     priceHistory: { m5: 0, h1: 0, h6: 0, h24: 0 },
@@ -53,7 +55,7 @@ export function useMockWebSocket() {
           })
         );
       }
-    }, 2000); // 2 seconds
+    }, 1000); // 2 seconds
 
     // --- MOCK NEW TOKEN ---
     // Every 10 seconds, add a new token
