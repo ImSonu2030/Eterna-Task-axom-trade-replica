@@ -6,6 +6,7 @@ import { useMockWebSocket } from "@/lib/store/useMockWebSocket";
 import { PulseNavigation } from "./PulseNavigation";
 
 export default function PulsePage() {
+  // ... (hooks and error handling are unchanged)
   const { isLoading, error } = useTokenData();
   useMockWebSocket();
 
@@ -19,18 +20,15 @@ export default function PulsePage() {
 
   return (
     <main className="min-h-screen bg-black text-white p-4">
-      {/* This is a placeholder for the main site header.
-        We can add more here later.
-      */}
       <div className="mb-4">
         <h1 className="text-2xl font-bold">Pulse</h1>
       </div>
 
-      {/* 2. ADD THE NAVIGATION COMPONENT */}
       <PulseNavigation />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <TokenColumn title="New Pairs" />
+        {/* Pass the showFilters prop */}
+        <TokenColumn title="New Pairs" showFilters={true} />
         <TokenColumn title="Final Stretch" />
         <TokenColumn title="Migrated" />
       </div>
