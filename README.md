@@ -4,9 +4,8 @@ This project is a high-fidelity, pixel-perfect replica of the Axiom Trade token 
 
 This application was built to meet a specific set of technical and functional requirements, including real-time updates, complex UI patterns, and a robust state management architecture.
 
-### [Vercel Deployment]()
+### [Vercel Deployment](https://eterna-axiom.vercel.app/pulse)
 
-<!-- [Screencast from 2025-11-09 17-08-54.webm] -->
 
 ## Core Features
 
