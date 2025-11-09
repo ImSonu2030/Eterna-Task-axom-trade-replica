@@ -1,12 +1,21 @@
-import { TokenColumn } from "./TokenColumn";
-import { Token } from "@/lib/types";
-import { MOCK_NEW_PAIRS } from "@/lib/dummyData";
+"use client";
 
-const newPairs: Token[] = MOCK_NEW_PAIRS; //
-const finalStretch: Token[] = [];
-const migrated: Token[] = [];
+import { TokenColumn } from "./TokenColumn";
+import { useTokenData } from "@/lib/store/useTokenData";
+import { useMockWebSocket } from "@/lib/store/useMockWebSocket";
 
 export default function PulsePage() {
+  const { isLoading, error } = useTokenData();
+  useMockWebSocket();
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-black text-white p-4">
+        <div className="text-red-500">Error loading data: {error.message}</div>
+      </main>
+    );
+  }
+  
   return (
     <main className="min-h-screen bg-black text-white p-4">
       <div className="mb-4">
@@ -14,9 +23,9 @@ export default function PulsePage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <TokenColumn title="New Pairs" tokens={newPairs} />
-        <TokenColumn title="Final Stretch" tokens={finalStretch} />
-        <TokenColumn title="Migrated" tokens={migrated} />
+        <TokenColumn title="New Pairs" />
+        <TokenColumn title="Final Stretch" />
+        <TokenColumn title="Migrated" />
       </div>
     </main>
   );

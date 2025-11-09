@@ -13,18 +13,47 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"; // <-- 1. IMPORT POPOVER
-import { TokenChartPopover } from "./TokenChartPopover"; // <-- 2. IMPORT OUR NEW COMPONENT
+} from "@/components/ui/popover";
+import { TokenChartPopover } from "./TokenChartPopover";
+import { RootState } from "@/lib/store/store"; // <-- 1. IMPORT
+import { useDispatch, useSelector } from "react-redux"; // <-- 2. IMPORT
+import { useEffect, useState } from "react"; // <-- 3. IMPORT
+import { clearJustUpdated } from "@/lib/store/pulseSlice"; // <-- 4. IMPORT
+import { cn } from "@/lib/utils"; // <-- 5. IMPORT cn (for classnames)
 
 interface TokenRowProps {
   token: Token;
 }
 
 export function TokenRow({ token }: TokenRowProps) {
+  const dispatch = useDispatch();
+  // 6. Get the ID of the token that was just updated
+  const justUpdatedTokenId = useSelector(
+    (state: RootState) => state.pulse.justUpdatedTokenId
+  );
+  
+  // 7. Local state to control the flash
+  const [isFlashing, setIsFlashing] = useState(false);
+
+  // 8. Effect to trigger the flash
+  useEffect(() => {
+    if (justUpdatedTokenId === token.id) {
+      setIsFlashing(true);
+      // After the flash, dispatch action to clear the ID
+      // and remove the flash class
+      const timer = setTimeout(() => {
+        setIsFlashing(false);
+        dispatch(clearJustUpdated());
+      }, 500); // Flash duration
+
+      return () => clearTimeout(timer);
+    }
+  }, [justUpdatedTokenId, token.id, dispatch]);
+
   const formatMarketCap = (num: number) => {
     if (num > 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`;
     if (num > 1_000) return `$${(num / 1_000).toFixed(1)}K`;
-    return `$${num}`;
+    return `$${num.toFixed(0)}`; // Format to 0 decimals for updates
   };
 
   const formatTimeAgo = (date: Date) => {
@@ -38,13 +67,17 @@ export function TokenRow({ token }: TokenRowProps) {
 
   return (
     <TooltipProvider delayDuration={100}>
-      {/* 3. WRAP THE ROW IN THE POPOVER COMPONENT */}
       <Popover>
-        <div className="p-4 bg-[#131313] hover:bg-[#202020] transition-colors">
+        {/* 9. Apply dynamic classes for the flash effect */}
+        <div
+          className={cn(
+            "p-4 bg-[#131313] hover:bg-[#202020] transition-colors duration-500",
+            isFlashing && "bg-blue-500/20" // The "flash" class
+          )}
+        >
+          {/* ... (rest of the component is identical) ... */}
           <div className="flex justify-between items-start mb-2">
-            {/* Left Side: Token Info */}
             <div className="flex gap-3">
-              {/* 4. MAKE IMAGE THE TRIGGER */}
               <PopoverTrigger asChild>
                 <Image
                   src={token.imageUrl}
@@ -55,7 +88,6 @@ export function TokenRow({ token }: TokenRowProps) {
                 />
               </PopoverTrigger>
               <div>
-                {/* 5. MAKE TEXT THE TRIGGER */}
                 <PopoverTrigger asChild>
                   <div className="cursor-pointer">
                     <div className="flex items-center gap-1.5">
@@ -65,8 +97,6 @@ export function TokenRow({ token }: TokenRowProps) {
                     <div className="text-gray-500 text-xs mb-1">{token.pairAddress}</div>
                   </div>
                 </PopoverTrigger>
-
-                {/* Stats Icons (with Tooltips) */}
                 <div className="flex items-center gap-3 text-xs text-gray-400">
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -104,18 +134,20 @@ export function TokenRow({ token }: TokenRowProps) {
                 </div>
               </div>
             </div>
-
-            {/* Right Side: Price Info */}
             <div className="text-right">
-              <div className="text-white font-bold">{formatMarketCap(token.marketCap)}</div>
+              {/* 10. Apply dynamic classes for MC flash */}
+              <div className={cn(
+                "text-white font-bold transition-colors duration-500",
+                isFlashing && "text-blue-300"
+              )}>
+                {formatMarketCap(token.marketCap)}
+              </div>
               <div className="text-gray-400 text-sm">V ${formatMarketCap(token.volume24h)}</div>
               <div className="text-xs text-gray-500">
                 F {token.priceChange} TX {token.transactions}
               </div>
             </div>
           </div>
-
-          {/* Bottom Part */}
           <div className="flex justify-between items-center">
             <div className="flex gap-2 text-xs text-gray-500">
               <span>5m <span className="text-green-500">{token.priceHistory.m5}%</span></span>
@@ -127,8 +159,6 @@ export function TokenRow({ token }: TokenRowProps) {
             </Button>
           </div>
         </div>
-        
-        {/* 6. DEFINE THE POPOVER CONTENT */}
         <PopoverContent className="p-0 border-0 bg-transparent">
           <TokenChartPopover token={token} />
         </PopoverContent>

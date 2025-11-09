@@ -1,31 +1,28 @@
-// lib/store/pulseSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Token } from "@/lib/types"; // Import our Token type
+import { Token } from "@/lib/types";
 
-// 1. Define the shape of our state
 interface PulseState {
   newPairs: Token[];
   finalStretch: Token[];
   migrated: Token[];
   isLoading: boolean;
   error: string | null;
+  justUpdatedTokenId: string | null; // <-- 1. ADD THIS
 }
 
-// 2. Define the initial state
 const initialState: PulseState = {
   newPairs: [],
   finalStretch: [],
   migrated: [],
   isLoading: true,
   error: null,
+  justUpdatedTokenId: null, // <-- 2. ADD THIS
 };
 
-// 3. Create the slice
 const pulseSlice = createSlice({
   name: "pulse",
   initialState,
   reducers: {
-    // Reducer to set tokens for a specific column
     setTokens(
       state,
       action: PayloadAction<{ column: keyof PulseState; tokens: Token[] }>
@@ -35,17 +32,47 @@ const pulseSlice = createSlice({
         state[column] = tokens;
       }
     },
-    // Reducer to set the loading state
     setLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
     },
-    // Reducer to set an error
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
     },
+
+    // 3. ADD THIS NEW REDUCER
+    addToken(state, action: PayloadAction<Token>) {
+      // Adds a new token to the start of the 'newPairs' array
+      state.newPairs.unshift(action.payload);
+      // Optional: limit array size
+      if (state.newPairs.length > 20) {
+        state.newPairs.pop();
+      }
+      state.justUpdatedTokenId = action.payload.id; // Flash for new token
+    },
+
+    // 4. ADD THIS NEW REDUCER
+    updateToken(state, action: PayloadAction<{ id: string; newMarketCap: number }>) {
+      const { id, newMarketCap } = action.payload;
+      const token = state.newPairs.find((t) => t.id === id);
+      if (token) {
+        token.marketCap = newMarketCap;
+        state.justUpdatedTokenId = id; // Set this ID to trigger flash
+      }
+    },
+    
+    // 5. ADD THIS NEW REDUCER
+    clearJustUpdated(state) {
+      state.justUpdatedTokenId = null;
+    }
   },
 });
 
-// 4. Export the actions and the reducer
-export const { setTokens, setLoading, setError } = pulseSlice.actions;
+export const { 
+  setTokens, 
+  setLoading, 
+  setError, 
+  addToken, 
+  updateToken,
+  clearJustUpdated // <-- Export the new actions
+} = pulseSlice.actions;
 export default pulseSlice.reducer;
